@@ -15,12 +15,3 @@ Install ffmpeg
 ```brew install ffmpeg```
 
 Use Firefox if you need to convert visualization frames into pngs.
-
-
-
-## requirements:
-- python 3.x
-- selenium
-- pandas
-- scipy
-- numpy
