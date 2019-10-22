@@ -1,4 +1,3 @@
-folium
 pandas
 numpy
 scipy
