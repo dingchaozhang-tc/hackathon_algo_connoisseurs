@@ -1,14 +1,17 @@
+import random
+from datetime import datetime
 from os.path import abspath, dirname, join
 
 import cv2
 import numpy as np
+import requests
 from playsound import playsound
 
 DATA_DIR = abspath(dirname(dirname(dirname((__file__)))))
 VOICE_FILE = join(DATA_DIR, "audio.wav")
 
 print(VOICE_FILE)
-
+#
 video_file = "Cal_Fire1.mp4"
 video = cv2.VideoCapture(video_file)
 # video = cv2.VideoCapture(0)
@@ -21,7 +24,7 @@ lineType = 2
 
 
 def send_info():
-    """Short summary.
+    """ Function to send event type and lat lon to API.
 
     Returns
     -------
@@ -29,8 +32,24 @@ def send_info():
         Description of returned object.
 
     """
+    lat, lon = 32.8377, -96.784
+    lat = str(lat + random.uniform(-0.01, 0.01))
+    lon = str(lon + random.uniform(-0.01, 0.01))
+    headers = {'X-API-TOKEN': 'your_token_here',
+               'Content-Type': 'application/json'}
 
-    pass
+    a = datetime.now()
+    timestamp =\
+        str(a.year) + str(a.month) + str(a.day) + str(a.hour) + \
+        str(a.minute) + str(a.second) + str(a.microsecond)[:3]
+
+    payload = {"vin": "VIN0123456789HACK",
+               "eventType": "fire",
+               "latitude": lat,
+               "longitude": lon,
+               "timeStamp": timestamp}
+    r = requests.post("http://foo.com/foo/bar", data=payload, headers=headers)
+    return
 
 
 while True:
@@ -54,7 +73,7 @@ while True:
     # https://stackoverflow.com/questions/10948589/choosing-the-correct-upper-and-lower-hsv-boundaries-for-color-detection-withcv
     lower = np.array([0, 155, 20], dtype="uint8")
     upper = np.array([20, 255, 255], dtype="uint8")
-    mask1 = cv2.inRange(hsv, lower, upper)
+    mask = cv2.inRange(hsv, lower, upper)
 
     # here insert the bgr values which you want to convert to hsv
     # red = np.uint8([[[0, 0, 255]]])
@@ -68,7 +87,7 @@ while True:
     # mask2 = cv2.inRange(hsv, lower, upper)
     #
     # mask = cv2.bitwise_or(mask1, mask2)
-    mask = mask1
+    # mask = mask1
     # kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
     # omask = cv2.morphologyEx(1 - mask, cv2.MORPH_OPEN, kernel)
 
